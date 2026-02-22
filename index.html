@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecipeConnect</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     AUTH
+════════════════════════════════════════ -->
+<div id="screen-auth" class="screen active">
+  <div class="auth-wrap">
+    <div class="auth-hero">
+      <img src="https://www.shutterstock.com/shutterstock/photos/2480633151/display_1500/stock-photo-a-happy-family-is-cooking-together-in-a-bright-kitchen-showing-joy-teamwork-and-love-for-2480633151.jpg" alt="" class="auth-hero-img" />
+      <div class="auth-hero-overlay">
+        <div class="brand auth-brand">🍳 RecipeConnect</div>
+        <blockquote class="auth-quote">"Great cooking is about love,<br>creativity, and a pinch of daring."</blockquote>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-box">
+        <h2 id="auth-heading">Welcome back</h2>
+        <p id="auth-sub">Sign in to continue your culinary journey</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Sign Up</button>
+        </div>
+        <div id="auth-err" class="err-msg hidden"></div>
+        <div id="signup-extra" class="hidden">
+          <div class="field-group"><label>FULL NAME</label><input id="f-name" placeholder="Gordon Ramsay" /></div>
+          <div class="field-group"><label>USERNAME</label><input id="f-username" placeholder="chef_gordon" /></div>
+          <div class="field-group"><label>BIO (optional)</label><input id="f-bio" placeholder="Passionate home cook from Mumbai…" /></div>
+        </div>
+        <div class="field-group"><label>EMAIL</label><input id="f-email" type="email" placeholder="chef@example.com" /></div>
+        <div class="field-group"><label>PASSWORD</label><input id="f-password" type="password" placeholder="••••••••" /></div>
+        <button id="auth-submit" class="btn-primary">Sign In →</button>
+        <p class="auth-switch">New here? <span id="auth-switch-link">Create an account</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ONBOARDING (3 steps — always shown after signup, optional after login)
+════════════════════════════════════════ -->
+<div id="screen-onboard" class="screen">
+  <div class="ob-progress-bar"><div id="ob-fill"></div></div>
+  <div class="ob-header">
+    <span class="brand" style="font-size:20px">🍳 RecipeConnect</span>
+    <span id="ob-step-lbl" class="ob-step-lbl">Step 1 of 3</span>
+  </div>
+
+  <!-- Step 1: Cooking styles -->
+  <div id="ob-s1" class="ob-body">
+    <div class="ob-eyebrow">STEP 1 — COOKING STYLES</div>
+    <h1 class="ob-title">What's your cooking vibe?</h1>
+    <p class="ob-sub">Pick at least 3 — your feed will be curated around them</p>
+    <div class="style-grid" id="ob-style-grid"></div>
+  </div>
+
+  <!-- Step 2: Dietary preferences -->
+  <div id="ob-s2" class="ob-body hidden">
+    <div class="ob-eyebrow">STEP 2 — DIETARY PREFERENCES</div>
+    <h1 class="ob-title">Any dietary preferences?</h1>
+    <p class="ob-sub">We'll filter and flag recipes that match your needs</p>
+    <div class="diet-grid" id="ob-diet-grid"></div>
+  </div>
+
+  <!-- Step 3: Follow chefs -->
+  <div id="ob-s3" class="ob-body hidden">
+    <div class="ob-eyebrow">STEP 3 — FOLLOW CHEFS</div>
+    <h1 class="ob-title">Follow your favourite chefs</h1>
+    <p class="ob-sub">Their recipes appear first in your personalised feed</p>
+    <div class="chef-ob-grid" id="ob-chef-grid"></div>
+  </div>
+
+  <div class="ob-footer">
+    <span class="ob-hint" id="ob-hint"></span>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn-ob btn-ob-skip" id="ob-skip">Skip all</button>
+      <button class="btn-ob btn-ob-back hidden" id="ob-back">← Back</button>
+      <button class="btn-ob" id="ob-next" disabled>Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sb-brand brand">🍳 RecipeConnect</div>
+      <nav class="sb-section">
+        <div class="sb-label">MENU</div>
+        <div class="sb-item active" data-page="feed">  <span class="sb-icon">🏠</span> Home</div>
+        <div class="sb-item" data-page="chefs">        <span class="sb-icon">👨‍🍳</span> Chefs</div>
+        <div class="sb-item" data-page="saved">        <span class="sb-icon">🔖</span> Saved</div>
+        <div class="sb-item" data-page="create">       <span class="sb-icon">✏️</span> Create</div>
+        <div class="sb-item" data-page="prefs">        <span class="sb-icon">🎨</span> My Tastes</div>
+        <div class="sb-item" data-page="profile">      <span class="sb-icon">👤</span> My Profile</div>
+        <div class="sb-divider"></div>
+        <div class="sb-item sb-logout" id="logout-btn"><span class="sb-icon">🚪</span> Logout</div>
+      </nav>
+      <div class="sb-following hidden" id="sb-following">
+        <div class="sb-label">FOLLOWING</div>
+        <div id="sb-followed-list"></div>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="search-box">
+          <span style="color:var(--muted);font-size:14px;flex-shrink:0">🔍</span>
+          <input id="search-input" placeholder="Search recipes, cuisines, chefs…" />
+        </div>
+        <div class="tb-right">
+          <div class="user-pill" id="topbar-profile-btn">
+            <div class="user-av" id="topbar-av">👨‍🍳</div>
+            <div class="user-pill-name" id="topbar-username">chef</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- FEED PAGE -->
+      <div id="page-feed" class="page active">
+        <div class="content">
+          <div class="pg-title" id="feed-title">Hey chef 👋</div>
+          <div class="pg-sub" id="feed-sub"></div>
+          <div class="curated hidden" id="curated-banner">
+            <div style="font-size:28px">✨</div>
+            <div><h3>Personalised for you</h3><p id="curated-text"></p></div>
+          </div>
+          <div class="feed-tabs">
+            <button class="feed-tab active" data-ftab="foryou">For You</button>
+            <button class="feed-tab" data-ftab="following">Following</button>
+            <button class="feed-tab" data-ftab="liked">Liked</button>
+          </div>
+          <div class="filters">
+            <button class="chip active" data-diff="all">All</button>
+            <button class="chip" data-diff="easy">Easy</button>
+            <button class="chip" data-diff="medium">Medium</button>
+            <button class="chip" data-diff="hard">Hard</button>
+          </div>
+          <div class="recipe-grid" id="feed-grid"></div>
+          <div class="empty hidden" id="feed-empty">
+            <span class="ei">🔍</span><h3>Nothing here</h3><p>Try a different filter or tab</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHEFS PAGE -->
+      <div id="page-chefs" class="page">
+        <div class="content">
+          <div class="pg-title">Discover Chefs</div>
+          <div class="pg-sub">Click any chef card to view their full profile</div>
+          <input id="chefs-search" class="chefs-search-input" placeholder="🔍  Search by name or specialty…" />
+          <div class="chefs-grid" id="chefs-grid"></div>
+        </div>
+      </div>
+
+      <!-- SAVED PAGE -->
+      <div id="page-saved" class="page">
+        <div class="content">
+          <div class="pg-title">My Library</div>
+          <div class="pg-sub">Everything you've saved and liked</div>
+          <div class="stats-row">
+            <div class="stat-box"><div class="sn" id="stat-saved">0</div><div class="sl">Saved</div></div>
+            <div class="stat-box"><div class="sn" id="stat-liked">0</div><div class="sl">Liked</div></div>
+            <div class="stat-box"><div class="sn" id="stat-following">0</div><div class="sl">Following</div></div>
+          </div>
+          <div class="pg-subtitle">📌 Saved Recipes</div>
+          <div class="recipe-grid" id="saved-grid"></div>
+          <div class="empty hidden" id="saved-empty">
+            <span class="ei">🔖</span><h3>Nothing saved yet</h3><p>Hit the bookmark icon on any recipe</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE PAGE -->
+      <div id="page-create" class="page">
+        <div class="content">
+          <div class="pg-title">Create a Recipe</div>
+          <div class="pg-sub">Share your culinary creation with the community</div>
+          <div class="create-form">
+            <div class="form-grid">
+              <div class="field-group"><label>RECIPE TITLE</label><input id="c-title" placeholder="e.g. Perfect Carbonara" /></div>
+              <div class="field-group"><label>CUISINE</label>
+                <select id="c-cuisine"><option>Italian</option><option>Japanese</option><option>American</option><option>Indian</option><option>Thai</option><option>French</option><option>Korean</option><option>Chinese</option><option>Fusion</option><option>Mexican</option></select>
+              </div>
+              <div class="field-group"><label>DIFFICULTY</label>
+                <select id="c-diff"><option>easy</option><option selected>medium</option><option>hard</option></select>
+              </div>
+              <div class="field-group"><label>COOK TIME (MIN)</label><input id="c-time" type="number" min="1" placeholder="30" /></div>
+            </div>
+            <div class="field-group"><label>SHORT DESCRIPTION</label><input id="c-desc" placeholder="e.g. Crispy guanciale, silky egg sauce, no cream" /></div>
+            <div class="field-group"><label>INGREDIENTS (one per line)</label><textarea id="c-ing" rows="5" placeholder="200g spaghetti&#10;150g guanciale&#10;4 egg yolks"></textarea></div>
+            <div class="field-group"><label>METHOD (one per line)</label><textarea id="c-steps" rows="5" placeholder="Cook pasta al dente&#10;Fry guanciale crispy&#10;Combine off heat"></textarea></div>
+            <button class="publish-btn" id="publish-btn">🚀 Publish Recipe</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY TASTES PAGE -->
+      <div id="page-prefs" class="page">
+        <div class="content">
+          <div class="pg-title">My Tastes</div>
+          <div class="pg-sub">Your feed updates the moment you save</div>
+          <div class="prefs-box">
+            <div class="prefs-box-title">🎨 Cooking Styles <span class="prefs-count" id="prefs-style-count"></span></div>
+            <div class="style-grid" id="prefs-style-grid"></div>
+          </div>
+          <div class="prefs-box" style="margin-top:16px">
+            <div class="prefs-box-title">🥗 Dietary Preferences <span class="prefs-count" id="prefs-diet-count"></span></div>
+            <div class="diet-grid" id="prefs-diet-grid"></div>
+          </div>
+          <button class="save-prefs-btn" id="save-prefs-btn">Save &amp; Update Feed</button>
+        </div>
+      </div>
+
+      <!-- MY PROFILE PAGE -->
+      <div id="page-profile" class="page">
+        <div class="profile-hero">
+          <div class="profile-cover"></div>
+          <div class="profile-info-row">
+            <div class="profile-av-wrap">
+              <div class="profile-av" id="my-profile-av">👨‍🍳</div>
+            </div>
+            <div class="profile-meta">
+              <div class="profile-name-row">
+                <h1 class="profile-name" id="my-profile-name">chef</h1>
+                <button class="btn-edit-profile" id="edit-profile-btn">✏️ Edit Profile</button>
+              </div>
+              <div class="profile-username" id="my-profile-username">@chef</div>
+              <div class="profile-bio-text" id="my-profile-bio">Passionate home cook</div>
+              <div class="profile-stats-row">
+                <div class="pstat"><strong id="pstat-saved">0</strong><span>Saved</span></div>
+                <div class="pstat"><strong id="pstat-following">0</strong><span>Following</span></div>
+                <div class="pstat"><strong id="pstat-liked">0</strong><span>Liked</span></div>
+              </div>
+              <div class="profile-tags-row" id="profile-taste-tags"></div>
+            </div>
+          </div>
+        </div>
+        <div class="content" style="padding-top:20px">
+          <div class="profile-tabs">
+            <button class="profile-tab active" data-ptab="saved">Saved</button>
+            <button class="profile-tab" data-ptab="liked">Liked</button>
+            <button class="profile-tab" data-ptab="tastes">My Tastes</button>
+          </div>
+          <div class="recipe-grid" id="my-profile-grid" style="margin-top:20px"></div>
+          <div class="empty hidden" id="my-profile-empty">
+            <span class="ei">📭</span><h3>Nothing here yet</h3><p>Start exploring recipes</p>
+          </div>
+          <!-- Tastes tab content -->
+          <div id="profile-tastes-content" class="hidden" style="margin-top:20px">
+            <div class="pg-subtitle" style="margin-bottom:12px">Your cooking styles</div>
+            <div class="tag-cloud" id="profile-styles-cloud"></div>
+            <div class="pg-subtitle" style="margin-bottom:12px;margin-top:24px">Dietary preferences</div>
+            <div class="tag-cloud" id="profile-diets-cloud"></div>
+            <a class="link-prefs" onclick="showPage('prefs')">Update in My Tastes →</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-area -->
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     RECIPE MODAL
+════════════════════════════════════════ -->
+<div id="recipe-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button class="modal-close-btn" id="modal-close">✕</button>
+    <img id="modal-img" class="modal-hero" src="" alt="" />
+    <div class="modal-body">
+      <h2 id="modal-title"></h2>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-sec"><h3>Ingredients</h3><div class="ing-list" id="modal-ing"></div></div>
+      <div class="modal-sec"><h3>Method</h3><ol class="steps-list" id="modal-steps"></ol></div>
+    </div>
+    <div class="modal-chef-bar">
+      <div class="modal-chef" id="modal-chef-click" title="View chef profile">
+        <div class="modal-chef-av" id="modal-chef-av"></div>
+        <div class="modal-chef-info">
+          <h4 id="modal-chef-name"></h4>
+          <p id="modal-chef-followers"></p>
+        </div>
+        <span class="modal-chef-arrow">→</span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-mlike" id="modal-like-btn">🤍 <span id="modal-like-count"></span></button>
+        <button class="btn-mfollow" id="modal-follow-btn">+ Follow</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     CHEF PROFILE PANEL (slide-in from right)
+════════════════════════════════════════ -->
+<div id="chef-panel-overlay" class="panel-overlay hidden">
+  <div class="chef-panel">
+    <button class="panel-close-btn" id="chef-panel-close">✕</button>
+    <div class="chef-panel-hero">
+      <div class="chef-panel-av" id="cp-av"></div>
+      <div>
+        <h2 id="cp-name" class="cp-name"></h2>
+        <div id="cp-specialty" class="cp-specialty"></div>
+        <div id="cp-bio" class="cp-bio"></div>
+        <div class="cp-stats">
+          <div class="cp-stat"><strong id="cp-followers"></strong><span>Followers</span></div>
+          <div class="cp-stat"><strong id="cp-recipes-count"></strong><span>Recipes</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="chef-panel-action-row" id="cp-actions"></div>
+    <div class="chef-panel-body">
+      <div class="pg-subtitle">Recipes</div>
+      <div class="recipe-grid" id="cp-recipe-grid"></div>
+      <div class="empty hidden" id="cp-empty">
+        <span class="ei">🍽️</span><h3>No recipes yet</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     EDIT PROFILE MODAL
+════════════════════════════════════════ -->
+<div id="edit-modal" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width:460px">
+    <button class="modal-close-btn" id="edit-modal-close">✕</button>
+    <div class="modal-body">
+      <h2 style="margin-bottom:20px;font-family:'Fraunces',serif">Edit Profile</h2>
+      <div class="avatar-row">
+        <div class="edit-av-current" id="edit-av-current">👨‍🍳</div>
+        <div>
+          <div class="field-group-label">CHOOSE AVATAR</div>
+          <div class="avatar-options" id="avatar-options"></div>
+        </div>
+      </div>
+      <div class="field-group"><label>DISPLAY NAME</label><input id="edit-name" /></div>
+      <div class="field-group"><label>USERNAME</label><input id="edit-username" /></div>
+      <div class="field-group"><label>BIO</label><textarea id="edit-bio" rows="3" placeholder="Tell us about yourself…"></textarea></div>
+      <button class="btn-primary" id="edit-save-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
