@@ -1,0 +1,141 @@
+import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
+import path from 'path'
+
+// Load environment variables from .env.local
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
+
+import { COOKING_STYLES, DIETS } from '../src/lib/data'
+
+export const CHEFS = [
+    { id: "mario", name: "Chef Mario", emoji: "🇮🇹", specialty: "Italian & Pasta", followers: 12400, bio: "Naples-born. Hand-rolled pasta and wood-fired everything." },
+    { id: "yuki", name: "Chef Yuki", emoji: "🍣", specialty: "Japanese & Omakase", followers: 18900, bio: "15 years in Tokyo's finest omakase restaurants." },
+    { id: "sarah", name: "Chef Sarah", emoji: "🥩", specialty: "BBQ & American Grill", followers: 9800, bio: "Texas BBQ royalty. Low-and-slow is the only way." },
+    { id: "priya", name: "Chef Priya", emoji: "🌶️", specialty: "Indian & Street Spice", followers: 14200, bio: "Mumbai street food meets fine dining. Spice is life." },
+    { id: "emma", name: "Chef Emma", emoji: "🥗", specialty: "Plant-Based & Healthy", followers: 22100, bio: "Proving vegan food can be the most exciting thing on the plate." },
+    { id: "nak", name: "Chef Nak", emoji: "🍜", specialty: "Thai & Southeast Asian", followers: 8700, bio: "Bringing the flavours of Chiang Mai to your kitchen." },
+    { id: "lucia", name: "Chef Lucia", emoji: "🍰", specialty: "Pastry & Desserts", followers: 31000, bio: "Pastry chef, chocolate obsessive, tiramisu perfectionist." },
+    { id: "jin", name: "Chef Jin", emoji: "🔥", specialty: "Korean Fusion", followers: 16500, bio: "Bridging Seoul street food with modern technique." },
+    { id: "antonio", name: "Chef Antonio", emoji: "🍕", specialty: "Neapolitan Pizza", followers: 11200, bio: "Third-generation pizzaiolo. 72-hour dough or nothing." },
+    { id: "mei", name: "Chef Mei", emoji: "🥟", specialty: "Dim Sum & Chinese", followers: 19300, bio: "Hong Kong dim sum meets contemporary innovation." },
+];
+
+export const RECIPES = [
+    {
+        id: 1, title: "Chocolate Lava Cake", image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500", desc: "Molten dark chocolate center, crispy edges", chefId: "mario", difficulty: "medium", time: 29, rating: 4.7, likes: 234, styles: ["gourmet", "desserts"], cuisine: "French",
+        ingredients: ["200g dark chocolate", "100g butter", "3 eggs", "50g sugar", "30g flour"],
+        steps: ["Melt chocolate and butter together", "Whisk eggs and sugar until pale", "Fold in flour then chocolate", "Bake at 200°C for 12 min"]
+    },
+    {
+        id: 2, title: "Omakase Sushi Roll", image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=500", desc: "Premium salmon and tuna with ponzu", chefId: "yuki", difficulty: "hard", time: 45, rating: 4.9, likes: 567, styles: ["gourmet", "finedining"], cuisine: "Japanese",
+        ingredients: ["Sushi rice", "Nori sheets", "200g salmon", "Avocado", "Cucumber", "Ponzu sauce"],
+        steps: ["Season rice with vinegar mix", "Slice fish paper thin", "Roll tightly on bamboo mat", "Slice and plate with garnish"]
+    },
+    {
+        id: 3, title: "Truffle Smash Burger", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500", desc: "Wagyu beef, white truffle oil, aged cheddar", chefId: "sarah", difficulty: "medium", time: 25, rating: 5.0, likes: 892, styles: ["bbq", "comfort", "gourmet"], cuisine: "American",
+        ingredients: ["500g wagyu mince", "Brioche buns", "2 tbsp truffle oil", "Aged cheddar", "Pickles"],
+        steps: ["Form loose 120g balls", "Smash on screaming-hot cast iron", "Flip, cheese, cover 30 sec", "Build and drizzle truffle oil"]
+    },
+    {
+        id: 4, title: "Butter Chicken Makhani", image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=500", desc: "Silky tomato cream sauce, tandoori chicken", chefId: "priya", difficulty: "medium", time: 50, rating: 4.8, likes: 1240, styles: ["comfort", "streetfood"], cuisine: "Indian",
+        ingredients: ["700g chicken thighs", "Yogurt & spices", "400ml tomato puree", "200ml cream", "Butter & garlic"],
+        steps: ["Marinate chicken overnight", "Grill until charred", "Build sauce with butter and tomatoes", "Simmer 20 min"]
+    },
+    {
+        id: 5, title: "Rainbow Grain Bowl", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500", desc: "Quinoa, roasted veg, tahini goddess dressing", chefId: "emma", difficulty: "easy", time: 20, rating: 4.5, likes: 445, styles: ["healthy", "vegan", "quick"], cuisine: "Fusion",
+        ingredients: ["Quinoa", "Mixed roasted veg", "Tahini", "Lemon", "Pomegranate seeds", "Fresh herbs"],
+        steps: ["Cook quinoa, let cool", "Roast veg at 200°C 25 min", "Blend tahini dressing", "Assemble and drizzle"]
+    },
+    {
+        id: 6, title: "Pad Thai Street Style", image: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=500", desc: "Wok-charred noodles with tamarind & prawns", chefId: "nak", difficulty: "medium", time: 30, rating: 4.7, likes: 788, styles: ["streetfood", "quick"], cuisine: "Thai",
+        ingredients: ["Rice noodles", "200g prawns", "Tamarind paste", "Fish sauce", "Bean sprouts", "Peanuts"],
+        steps: ["Soak noodles 20 min", "High-heat wok, cook prawns", "Add noodles and sauce", "Toss fast, top with peanuts"]
+    },
+    {
+        id: 7, title: "Tiramisu Classico", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500", desc: "Cold brew espresso, mascarpone, Amaretto", chefId: "lucia", difficulty: "medium", time: 40, rating: 4.9, likes: 1120, styles: ["desserts", "gourmet"], cuisine: "Italian",
+        ingredients: ["500g mascarpone", "4 eggs", "100g sugar", "Cold brew espresso", "Ladyfingers", "Amaretto", "Cacao"],
+        steps: ["Whip egg whites to stiff peaks", "Whisk yolks and sugar pale", "Fold mascarpone in", "Layer with ladyfingers, chill 6hrs"]
+    },
+    {
+        id: 8, title: "Bulgogi Street Tacos", image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500", desc: "Korean BBQ beef, kimchi slaw, sesame mayo", chefId: "jin", difficulty: "medium", time: 35, rating: 4.8, likes: 934, styles: ["streetfood", "fusion", "bbq"], cuisine: "Korean-Mexican",
+        ingredients: ["500g ribeye", "Gochujang marinade", "Flour tortillas", "Kimchi", "Sesame mayo"],
+        steps: ["Slice beef thin, marinate 2hrs", "Grill max heat 2 min/side", "Warm tortillas", "Assemble with kimchi slaw"]
+    },
+    {
+        id: 9, title: "Neapolitan Margherita", image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500", desc: "72-hour dough, San Marzano, buffalo mozz", chefId: "antonio", difficulty: "hard", time: 90, rating: 4.6, likes: 673, styles: ["gourmet", "comfort"], cuisine: "Italian",
+        ingredients: ["400g 00 flour", "San Marzano tomatoes", "Buffalo mozzarella", "Fresh basil", "Olive oil"],
+        steps: ["Cold-proof dough 72hrs", "Stretch by hand 30cm", "Sauce and tear mozzarella over", "Bake at max heat 90 sec"]
+    },
+    {
+        id: 10, title: "Har Gow Dim Sum", image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500", desc: "Crystal prawn dumplings, XO dipping sauce", chefId: "mei", difficulty: "hard", time: 60, rating: 4.8, likes: 891, styles: ["finedining", "gourmet"], cuisine: "Chinese",
+        ingredients: ["Wheat starch", "300g prawns", "Bamboo shoots", "Sesame oil", "XO sauce"],
+        steps: ["Make crystal dough with boiling water", "Mince prawn filling", "Pleat into 7-fold fans", "Steam 8 min, serve immediately"]
+    },
+    {
+        id: 11, title: "Avocado Toast Deluxe", image: "https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=500", desc: "Sourdough, dukkah, poached egg, chilli oil", chefId: "emma", difficulty: "easy", time: 12, rating: 4.5, likes: 512, styles: ["breakfast", "healthy", "quick"], cuisine: "Modern Australian",
+        ingredients: ["Sourdough", "2 avocados", "2 eggs", "Dukkah", "Chilli oil", "Microgreens"],
+        steps: ["Toast sourdough thick", "Smash avocado with lemon", "Poach eggs 3 min", "Stack, drizzle chilli oil, dust dukkah"]
+    },
+    {
+        id: 12, title: "Croissant au Beurre", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500", desc: "Classic laminated pastry, 81 flaky layers", chefId: "lucia", difficulty: "hard", time: 180, rating: 5.0, likes: 2100, styles: ["baking", "finedining", "gourmet"], cuisine: "French",
+        ingredients: ["500g flour", "AOP butter block", "Milk", "Yeast", "Sugar", "Salt"],
+        steps: ["Make détrempe, rest overnight", "Lock butter block in, fold 3×", "Cut triangles and roll", "Proof 2hrs, egg wash, bake 200°C"]
+    },
+];
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Missing Supabase environment variables')
+    process.exit(1)
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+async function seed() {
+    console.log('Starting Supabase seeding...')
+
+    // Insert Chefs
+    const { error: chefsError } = await supabase.from('chefs').upsert(CHEFS)
+    if (chefsError) {
+        console.error('Error seeding chefs:', chefsError.message)
+        return
+    }
+    console.log('✅ Chefs seeded successfully')
+
+    // Insert Cooking Styles
+    const { error: stylesError } = await supabase.from('cooking_styles').upsert(COOKING_STYLES)
+    if (stylesError) {
+        console.error('Error seeding cooking styles:', stylesError.message)
+        return
+    }
+    console.log('✅ Cooking styles seeded successfully')
+
+    // Insert Diets
+    const { error: dietsError } = await supabase.from('diets').upsert(DIETS)
+    if (dietsError) {
+        console.error('Error seeding diets:', dietsError.message)
+        return
+    }
+    console.log('✅ Diets seeded successfully')
+
+    const mappedRecipes = RECIPES.map(({ chefId, ...rest }) => ({
+        ...rest,
+        chefid: chefId,
+    }))
+
+    const { error: recipesError } = await supabase.from('recipes').upsert(mappedRecipes)
+    if (recipesError) {
+        console.error('Error seeding recipes:', recipesError.message)
+        return
+    }
+    console.log('✅ Recipes seeded successfully')
+
+    console.log('Seeding complete!')
+}
+
+seed().catch((err) => {
+    console.error('Unexpected error during seeding:', err)
+    process.exit(1)
+})
