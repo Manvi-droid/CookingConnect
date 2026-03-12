@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
+import { NearbyMapPanel } from "./NearbyMapPanel";
 
 interface RecipeModalProps {
     recipe: any | null;
@@ -13,6 +14,7 @@ interface RecipeModalProps {
 
 export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }: RecipeModalProps) {
     const { state, doLike, doFollow, doSave } = useAppContext();
+    const [showNearby, setShowNearby] = useState(false);
 
     if (!recipe) return null;
 
@@ -24,9 +26,14 @@ export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }:
 
     const fmt = (n: number) => (n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n));
 
+    const handleClose = () => {
+        setShowNearby(false);
+        onClose();
+    };
+
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className={`modal-overlay ${showNearby ? "split-view" : ""}`} onClick={handleClose}>
+            <div className={`modal-box ${showNearby ? "modal-box--shifted" : ""}`} onClick={(e) => e.stopPropagation()}>
                 <div style={{ position: "absolute", top: 16, right: 60, zIndex: 10 }}>
                     <button
                         className="rc-save-btn"
@@ -41,7 +48,7 @@ export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }:
                         {isSaved ? "📌" : "🔖"}
                     </button>
                 </div>
-                <button className="modal-close-btn" onClick={onClose}>
+                <button className="modal-close-btn" onClick={handleClose}>
                     ✕
                 </button>
                 <img className="modal-hero" src={recipe.image} alt={recipe.title} />
@@ -62,6 +69,17 @@ export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }:
                             🌍 <strong>{recipe.cuisine}</strong>
                         </span>
                     </div>
+
+                    {/* Find Nearby Button */}
+                    <button
+                        className={`btn-find-nearby ${showNearby ? "active" : ""}`}
+                        onClick={() => setShowNearby(!showNearby)}
+                    >
+                        <span className="btn-fn-icon">📍</span>
+                        <span>{showNearby ? "Hide Nearby" : "Find Nearby Restaurants"}</span>
+                        <span className="btn-fn-arrow">{showNearby ? "←" : "→"}</span>
+                    </button>
+
                     <div className="modal-sec">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                             <h3 style={{ margin: 0 }}>Ingredients</h3>
@@ -105,7 +123,7 @@ export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }:
                         className="modal-chef"
                         title="View chef profile"
                         onClick={() => {
-                            onClose();
+                            handleClose();
                             onChefClick(recipe.chefid);
                         }}
                     >
@@ -132,6 +150,15 @@ export function RecipeModal({ recipe, chef, onClose, onChefClick, onSaveClick }:
                     </div>
                 </div>
             </div>
+
+            {/* Nearby Map Panel - slides in from right */}
+            {showNearby && (
+                <NearbyMapPanel
+                    cuisine={recipe.cuisine}
+                    dishName={recipe.title}
+                    onClose={() => setShowNearby(false)}
+                />
+            )}
         </div>
     );
 }

@@ -1981,6 +1981,442 @@ a:active {
   opacity: 1;
 }
 
+/* ── NEARBY RESTAURANTS PANEL ───────────────── */
+
+/* Split-view overlay: recipe slides left, map panel appears right */
+.modal-overlay.split-view {
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* Modal box shifts left and shrinks when map is open */
+.modal-box--shifted {
+  max-width: 440px !important;
+  animation: shiftLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes shiftLeft {
+  from {
+    max-width: 680px;
+    transform: translateX(0);
+  }
+
+  to {
+    max-width: 440px;
+    transform: translateX(0);
+  }
+}
+
+/* Find Nearby button */
+.btn-find-nearby {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(247, 147, 30, 0.08));
+  border: 1.5px solid rgba(255, 107, 53, 0.25);
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-find-nearby:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(247, 147, 30, 0.15));
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.2);
+}
+
+.btn-find-nearby.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.btn-fn-icon {
+  font-size: 16px;
+}
+
+.btn-fn-arrow {
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+
+.btn-find-nearby:hover .btn-fn-arrow {
+  transform: translateX(3px);
+}
+
+.btn-find-nearby.active:hover .btn-fn-arrow {
+  transform: translateX(-3px);
+}
+
+/* Nearby Panel */
+.nearby-panel {
+  width: 420px;
+  max-width: 100%;
+  max-height: 88vh;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: nearbySlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes nearbySlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.nearby-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nearby-header h3 {
+  font-family: "Fraunces", serif;
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.nearby-header p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.nearby-close-btn {
+  width: 30px;
+  height: 30px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.nearby-close-btn:hover {
+  background: rgba(255, 107, 53, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Quick links (Swiggy, Zomato) */
+.nearby-quick-links {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.quick-link-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: all 0.2s;
+}
+
+.swiggy-btn {
+  background: rgba(255, 140, 0, 0.1);
+  border: 1px solid rgba(255, 140, 0, 0.25);
+  color: #ff8c00 !important;
+}
+
+.swiggy-btn:hover {
+  background: rgba(255, 140, 0, 0.2);
+  border-color: #ff8c00;
+  transform: translateY(-1px);
+}
+
+.zomato-btn {
+  background: rgba(230, 50, 50, 0.1);
+  border: 1px solid rgba(230, 50, 50, 0.25);
+  color: #e63232 !important;
+}
+
+.zomato-btn:hover {
+  background: rgba(230, 50, 50, 0.2);
+  border-color: #e63232;
+  transform: translateY(-1px);
+}
+
+.ql-icon {
+  font-size: 14px;
+}
+
+/* Status / Loading */
+.nearby-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 12px;
+}
+
+.nearby-status p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.nearby-status-sub {
+  font-size: 12px !important;
+  color: var(--muted2) !important;
+}
+
+.nearby-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nearby-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 20px;
+  padding: 12px 16px;
+  background: rgba(255, 60, 60, 0.08);
+  border: 1px solid rgba(255, 60, 60, 0.2);
+  border-radius: 10px;
+}
+
+.nearby-error span {
+  font-size: 20px;
+}
+
+.nearby-error p {
+  font-size: 13px;
+  color: #ff6b6b;
+}
+
+/* Map */
+.nearby-map-wrap {
+  padding: 14px 14px 0;
+}
+
+.nearby-results-header {
+  padding: 10px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Restaurant list */
+.nearby-list {
+  padding: 0 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nearby-empty {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--muted);
+}
+
+.nearby-empty span {
+  font-size: 30px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.nearby-empty p {
+  font-size: 13px;
+}
+
+/* Restaurant card */
+.nearby-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.nearby-card:hover {
+  border-color: #444;
+  background: var(--s3);
+  transform: translateX(2px);
+}
+
+.nearby-card.active {
+  border-color: var(--accent);
+  background: rgba(255, 107, 53, 0.06);
+}
+
+.nc-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 107, 53, 0.12);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.nc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nc-name {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.nearby-stars {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.star-filled {
+  color: #f7931e;
+}
+
+.star-empty {
+  color: var(--muted2);
+}
+
+.nc-rating-num {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nc-reviews {
+  color: var(--muted2);
+}
+
+.nc-dot {
+  color: var(--muted2);
+}
+
+.nc-distance {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nc-address {
+  font-size: 11px;
+  color: var(--muted2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-tags {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.nc-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+}
+
+.nc-tag.open {
+  background: rgba(29, 185, 84, 0.15);
+  color: #1db954;
+}
+
+.nc-tag.closed {
+  background: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.nc-tag.price {
+  background: rgba(255, 107, 53, 0.1);
+  color: var(--accent);
+}
+
+.nc-directions-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  text-decoration: none !important;
+}
+
+.nc-directions-btn:hover {
+  background: rgba(255, 107, 53, 0.15);
+  border-color: var(--accent);
+  transform: scale(1.08);
+}
+
 /* ── ANIMATIONS ─────────────────────────────── */
 @keyframes fadeIn {
   from {
@@ -2065,5 +2501,22 @@ a:active {
 
   .profile-meta {
     padding-top: 0;
+  }
+
+  /* Nearby panel stacks on mobile */
+  .modal-overlay.split-view {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .modal-box--shifted {
+    max-width: 100% !important;
+  }
+
+  .nearby-panel {
+    width: 100%;
+    max-height: none;
   }
 }
